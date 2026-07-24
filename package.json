@@ -1,0 +1,35 @@
+{
+  "name": "chat_bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win portable"
+  },
+  "build": {
+    "appId": "com.daedalus.localai",
+    "productName": "Daedalus",
+    "win": {
+      "target": "portable",
+      "icon": "logo.ico"
+    },
+    "directories": {
+      "output": "dist"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "electron": "^43.2.0",
+    "electron-builder": "^26.15.3"
+  },
+  "dependencies": {
+    "cheerio": "^1.2.0",
+    "pdf-parse": "^2.4.5",
+    "png-to-ico": "^3.0.2",
+    "youtube-transcript": "^1.3.1"
+  }
+}

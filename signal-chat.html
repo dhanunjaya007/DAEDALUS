@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daedalus</title>
+<link rel="stylesheet" href="signal-chat.css">
+<link rel="stylesheet" href="atom-one-dark.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="app" id="app">
+  <!-- sidebar -->
+  <div class="sidebar">
+    <div class="brand">
+      <img src="logo.png" alt="Daedalus" class="brand-logo">
+      <div class="name" style="letter-spacing: 0.05em; font-weight: 700;">DAEDALUS</div>
+    </div>
+    <div style="display: flex; gap: 6px; margin: 12px 12px 8px;">
+      <button class="new-chat" id="newChatBtn" style="flex: 1; margin: 0;">+ new chat</button>
+      <button class="new-chat" id="newFolderBtn" style="flex: 1; margin: 0;">+ new folder</button>
+    </div>
+    <div class="chat-list" id="chatList"></div>
+    <div class="sidebar-footer">
+      <button class="settings-btn" id="openMemory" style="margin-bottom: 6px; color: var(--amber); border-color: var(--amber-dim);">
+        <span>global memory</span>
+        <span>🧠</span>
+      </button>
+      <button class="settings-btn" id="clearChatsBtn" style="margin-bottom: 6px; color: var(--danger); border-color: var(--danger-dim);">
+        <span>clear all chats</span>
+        <span>🗑</span>
+      </button>
+      <button class="settings-btn" id="openSettings">
+        <span>settings</span>
+        <span>⚙</span>
+      </button>
+      <div class="status-line">
+        <span class="status-dot" id="connDot"></span>
+        <span id="connText">checking connection…</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="resize-handle" id="resize-handle-left"></div>
+
+  <!-- main -->
+  <div class="main">
+    <div class="topbar">
+      <button class="icon-btn" id="toggleSidebar" title="toggle sidebar">☰</button>
+      <div class="title">chat / <b id="chatTitle">untitled</b></div>
+      <button class="icon-btn" id="exportBtn" title="export chat to markdown" style="font-size: 11px;">📄</button>
+      <button class="agent-toggle" id="agentToggle" title="let the model call tools">
+        <span class="swatch"></span> agent mode
+      </button>
+      <div class="model-pill" id="modelPill">qwen2.5:7b</div>
+      <button class="icon-btn" id="toggleTrace" title="toggle trace panel">◧</button>
+    </div>
+
+    <div class="messages" id="messages">
+      <div class="empty-state" id="emptyState">
+        <div class="glyph">&gt;_</div>
+        <h1>nothing running yet</h1>
+        <p>this talks straight to your local Ollama instance. no cloud, no accounts, no logging out.</p>
+        <div class="hints">
+          <button class="hint-chip" data-prompt="Explain the difference between a hash map and a hash set, with a two-pointer example in C++.">explain a CS concept with a code example</button>
+          <button class="hint-chip" data-prompt="What's today's date and what's 18% of 462?">test tool calling — ask for the date or a calculation</button>
+          <button class="hint-chip" data-prompt="Give me a quick daily plan for reviewing transformer architecture fundamentals.">plan a short study session</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="composer-wrap">
+      <div class="composer-bar">
+        <span style="font-family:var(--mono);font-size:11px;color:var(--text-faint)">model:</span>
+        <div class="model-select-wrap">
+          <select class="model-select" id="modelSelect"></select>
+        </div>
+        <button class="model-refresh" id="refreshModels" title="refresh model list">⟳</button>
+        <button id="openPersonaBtn" style="margin-left:auto; background:transparent; border:1px solid var(--border); border-radius:var(--radius); padding:4px 8px; color:var(--text); font-size:12px; cursor:pointer; display:flex; align-items:center; gap:6px;">
+          <span id="activePersonaIcon">🤖</span> <span id="activePersonaName">Default</span>
+        </button>
+      </div>
+      <div class="image-preview-strip" id="imagePreviewStrip"></div>
+      <div class="composer" id="composer">
+        <input type="file" id="fileInput" accept=".pdf,.txt,.md,.py,.json,.js,.cpp,.c,.h,.hpp,.java,.html,.css,.rs,.go,.sh,.ts,image/png,image/jpeg,image/webp,image/gif" multiple style="display:none">
+        <button class="attach-btn" id="attachBtn" title="attach an image or document">📎</button>
+        <button class="attach-btn" id="youtubeBtn" title="summarize a youtube video">📺</button>
+        <textarea id="input" placeholder="Message signal…" rows="1"></textarea>
+        <button class="send-btn" id="sendBtn">↑</button>
+      </div>
+      <div class="composer-note">Ollama · <span id="endpointNote">http://localhost:11434</span></div>
+    </div>
+  </div>
+  
+  <div class="resize-handle" id="resize-handle-right"></div>
+
+  <!-- trace panel -->
+  <div class="trace" id="tracePanel">
+    <div class="trace-header">
+      <span class="t">TRACE / TOOL CALLS</span>
+      <span class="t" id="traceCount">0</span>
+    </div>
+    <div class="trace-body" id="traceBody">
+      <div class="trace-empty">no tool calls yet.<br>enable "agent mode" and ask something<br>that needs a live calculation, the date,<br>or a note stored earlier in this chat.</div>
+    </div>
+  </div>
+</div>
+<!-- memory modal -->
+<div class="modal-overlay" id="memoryOverlay">
+  <div class="modal">
+    <h2>GLOBAL MEMORY</h2>
+    <div class="field">
+      <label>Add personal fact</label>
+      <div style="display:flex; gap:6px;">
+        <input type="text" id="newMemoryInput" placeholder="e.g. I am learning React" style="flex:1; padding:6px; background:var(--panel-2); color:var(--text); border:1px solid var(--border); border-radius:var(--radius); font-family:var(--sans);">
+        <button class="btn primary" id="addMemoryBtn">Add</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Known Facts</label>
+      <div id="memoryList" style="max-height:150px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--radius); padding:6px; background:var(--panel-2); font-size:12.5px; color:var(--text-dim);">
+        <div style="padding:4px; opacity:0.5;">No memories yet.</div>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-row">
+        <label style="margin:0">Auto-extract memories from chats</label>
+        <div class="toggle-switch on" id="autoMemoryToggle"><div class="knob"></div></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="closeMemoryBtn">Close</button>
+    </div>
+  </div>
+</div>
+<!-- custom prompt modal -->
+<div class="modal-overlay" id="promptOverlay" style="display:none; z-index: 9999;">
+  <div class="modal" style="width: 300px;">
+    <h2 id="promptTitle" style="font-size:14px; margin-bottom:12px;">Prompt</h2>
+    <div class="field">
+      <input type="text" id="promptInput" style="width:100%; padding:6px; background:var(--panel-2); color:var(--text); border:1px solid var(--border); border-radius:var(--radius); font-family:var(--sans);">
+    </div>
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="btn" id="promptCancelBtn">Cancel</button>
+      <button class="btn primary" id="promptSubmitBtn">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- persona selector modal -->
+<div class="modal-overlay" id="personaSelectorOverlay">
+  <div class="modal" style="width:400px; max-width:90vw;">
+    <h2>SELECT PERSONA</h2>
+    <div class="field">
+      <input type="text" id="personaSearch" placeholder="Search personas..." style="width:100%; padding:8px; background:var(--panel-2); color:var(--text); border:1px solid var(--border); border-radius:var(--radius); font-family:var(--sans); margin-bottom:8px;">
+    </div>
+    <div id="personaList" style="max-height:300px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--panel-2);">
+      <!-- personas injected here -->
+    </div>
+    <div class="modal-actions" style="margin-top:12px;">
+      <button class="btn" id="closePersonaSelectorBtn">Close</button>
+      <button class="btn primary" id="openPersonaCreatorBtn">Create Custom</button>
+    </div>
+  </div>
+</div>
+
+<!-- persona creator modal -->
+<div class="modal-overlay" id="personaCreatorOverlay">
+  <div class="modal" style="width:400px; max-width:90vw;">
+    <h2>CREATE PERSONA</h2>
+    <div class="field">
+      <label>Name</label>
+      <input type="text" id="newPersonaName" placeholder="e.g. History Buff" style="width:100%; padding:6px; background:var(--panel-2); color:var(--text); border:1px solid var(--border); border-radius:var(--radius); font-family:var(--sans);">
+    </div>
+    <div class="field">
+      <label>Icon (Emoji)</label>
+      <input type="text" id="newPersonaIcon" placeholder="e.g. 🏛️" maxlength="5" style="width:50px; padding:6px; background:var(--panel-2); color:var(--text); border:1px solid var(--border); border-radius:var(--radius); font-family:var(--sans);">
+    </div>
+    <div class="field">
+      <label>Short Description</label>
+      <input type="text" id="newPersonaDesc" placeholder="Helps analyze historical events" style="width:100%; padding:6px; background:var(--panel-2); color:var(--text); border:1px solid var(--border); border-radius:var(--radius); font-family:var(--sans);">
+    </div>
+    <div class="field">
+      <label>System Prompt</label>
+      <textarea id="newPersonaPrompt" rows="4" style="width:100%; padding:6px; background:var(--panel-2); color:var(--text); border:1px solid var(--border); border-radius:var(--radius); resize:vertical; font-family:var(--sans);" placeholder="You are a history expert..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="cancelPersonaCreateBtn">Cancel</button>
+      <button class="btn primary" id="savePersonaBtn">Save Persona</button>
+    </div>
+  </div>
+</div>
+
+<!-- settings modal -->
+<div class="modal-overlay" id="settingsOverlay">
+  <div class="modal">
+    <h2>SETTINGS</h2>
+    <div class="field">
+      <label>Ollama endpoint</label>
+      <input type="text" id="endpointInput" value="http://localhost:11434">
+    </div>
+    <div class="field">
+      <label>Model</label>
+      <input type="text" id="modelInput" value="qwen2.5:7b">
+      <div class="modal-hint">any model you've pulled — e.g. qwen2.5:7b, qwen3-coder, llama3.1</div>
+    </div>
+    <div class="field">
+      <label>Theme</label>
+      <select id="themeSelect" style="width:100%; padding: 6px; background: var(--panel-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius);">
+        <option value="theme-dark">Dark Mode</option>
+        <option value="theme-light">Light Mode</option>
+        <option value="theme-matrix">Matrix Green</option>
+        <option value="theme-midnight">Midnight Blue</option>
+      </select>
+    </div>
+    <div class="field" style="display:none;">
+      <!-- Kept hidden to maintain backward config compatibility in JS without breaking things -->
+      <textarea id="systemPromptInput" rows="1"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-row">
+        <label style="margin:0">Stream responses</label>
+        <div class="toggle-switch on" id="streamToggle"><div class="knob"></div></div>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-row">
+        <label style="margin:0">Enable tools by default</label>
+        <div class="toggle-switch" id="agentDefaultToggle"><div class="knob"></div></div>
+      </div>
+      <div class="modal-hint">tools: get_current_time, calculate, remember_note, recall_notes</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="cancelSettings">Cancel</button>
+      <button class="btn primary" id="saveSettings">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="marked.min.js"></script>
+<script src="highlight.min.js"></script>
+<script src="js/state.js"></script>
+<script src="js/tools.js"></script>
+<script src="js/personas.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
