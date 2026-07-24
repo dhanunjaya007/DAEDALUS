@@ -2,9 +2,14 @@
   <img src="logo.png" alt="Daedalus Logo" width="200" height="200">
   <h1>Daedalus</h1>
   <p><strong>A Privacy-First, Local-AI Workspace for Students & Power Users</strong></p>
+  
+  <a href="https://github.com/dhanunjaya007/DAEDALUS/stargazers"><img src="https://img.shields.io/github/stars/dhanunjaya007/DAEDALUS?style=for-the-badge&color=ffca28&logo=github&labelColor=1a1a1a" alt="GitHub stars"></a>
+  <a href="https://github.com/dhanunjaya007/DAEDALUS/network/members"><img src="https://img.shields.io/github/forks/dhanunjaya007/DAEDALUS?style=for-the-badge&color=2ea043&logo=github&labelColor=1a1a1a" alt="GitHub forks"></a>
 </div>
 
 ---
+
+> **⭐️ Love Daedalus?** Please consider giving this repository a star! It helps the project grow and lets others discover this awesome local-AI tool. 
 
 Daedalus is a completely offline, local AI chat application powered by **[Ollama](https://ollama.ai/)**. Designed as a "student-killer app," Daedalus keeps your data private while giving you powerful tools to analyze documents, write code, search the web, and study efficiently.
 
