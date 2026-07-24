@@ -31,6 +31,14 @@ Daedalus is a completely offline, local AI chat application powered by **[Ollama
 * **Embeddings:** `nomic-embed-text`
 * **Parsing:** `pdf-parse`, `cheerio`, `youtube-transcript`
 
+## 💻 System Requirements (Compute)
+
+Because Daedalus runs models entirely locally on your own machine via Ollama, your hardware determines the performance.
+
+* **Minimum:** 8GB RAM, modern multi-core CPU (Will run 7B or 8B models like `llama3` or `qwen2.5:7b` at reasonable speeds).
+* **Recommended:** 16GB+ RAM, Apple Silicon (M1/M2/M3) OR a dedicated NVIDIA GPU with at least 8GB VRAM (e.g., RTX 3060 or better). This allows fast token generation and snappy document embeddings.
+* **Disk Space:** ~100MB for the app, plus 4GB - 8GB per LLM you download through Ollama.
+
 ## 📦 Getting Started
 
 ### Prerequisites
