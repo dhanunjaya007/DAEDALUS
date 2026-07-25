@@ -312,6 +312,9 @@
       renderMessages();
 
       // Background tasks
+      if (conv.messages.length === 2 && !conv.titleGenerated) {
+        generateTitleBackground(conv);
+      }
       if (autoExtractMemories && fullContent) {
         extractMemoriesBackground(conv);
       }
@@ -406,6 +409,41 @@ Return ONLY the summary text, no conversational filler.`;
         persistKBs();
       }
     } catch(e) { console.error("Folder KB update error:", e); }
+  }
+
+  async function generateTitleBackground(conv) {
+    if (conv.messages.length !== 2 || conv.titleGenerated) return;
+    conv.titleGenerated = true;
+    const firstUser = conv.messages[0].content;
+    const firstAsst = conv.messages[1].content;
+    const prompt = `Generate a very concise, 3-word title summarizing this topic. Return ONLY the 3 words, no quotes, no period, no markdown, no filler words.
+User: ${firstUser.slice(0, 300)}
+Assistant: ${firstAsst.slice(0, 300)}`;
+
+    try {
+      const res = await fetch(config.endpoint.replace(/\/$/, "") + "/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: config.model,
+          messages: [{ role: "user", content: prompt }],
+          stream: false
+        })
+      });
+      const data = await res.json();
+      let title = data.message?.content?.trim();
+      if (title) {
+        title = title.replace(/["'*`]/g, '').trim();
+        if (title.length > 0 && title.length < 40) {
+          conv.title = title;
+          persist();
+          renderChatList();
+          if (getActive()?.id === conv.id) {
+            $("chatTitle").textContent = title;
+          }
+        }
+      }
+    } catch(e) { console.error("Title generate error:", e); }
   }
 
   function finishTurn(){
