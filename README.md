@@ -5,6 +5,7 @@
   
   <a href="https://github.com/dhanunjaya007/DAEDALUS/stargazers"><img src="https://img.shields.io/github/stars/dhanunjaya007/DAEDALUS?style=for-the-badge&color=ffca28&logo=github&labelColor=1a1a1a" alt="GitHub stars"></a>
   <a href="https://github.com/dhanunjaya007/DAEDALUS/network/members"><img src="https://img.shields.io/github/forks/dhanunjaya007/DAEDALUS?style=for-the-badge&color=2ea043&logo=github&labelColor=1a1a1a" alt="GitHub forks"></a>
+  <a href="https://github.com/dhanunjaya007/DAEDALUS/discussions"><img src="https://img.shields.io/github/discussions/dhanunjaya007/DAEDALUS?style=for-the-badge&color=58a6ff&logo=github&labelColor=1a1a1a" alt="GitHub discussions"></a>
 </div>
 
 ---
@@ -75,6 +76,12 @@ To build a portable Windows executable (`.exe`):
 npm run dist
 ```
 The compiled executable will be located in the `dist/` directory.
+
+## 💬 Community & Feedback
+
+We love community feedback! Whether you want to request a new student feature, report a bug, or share how you use Daedalus for your studies or coding projects:
+* 🗣️ **[Join our GitHub Discussions](https://github.com/dhanunjaya007/DAEDALUS/discussions)** to share ideas, ask questions, and vote on upcoming features!
+* 🐛 **[Open an Issue](https://github.com/dhanunjaya007/DAEDALUS/issues)** if you find any bugs or technical issues.
 
 ## 📜 License
 
