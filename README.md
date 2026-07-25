@@ -13,6 +13,10 @@
 
 Daedalus is a completely offline, local AI chat application powered by **[Ollama](https://ollama.ai/)**. Designed as a "student-killer app," Daedalus keeps your data private while giving you powerful tools to analyze documents, write code, search the web, and study efficiently.
 
+<div align="center">
+  <img src="screenshot.png" alt="Daedalus App Screenshot" width="850">
+</div>
+
 ## 🚀 Features
 
 * **100% Local & Private:** No cloud APIs, no subscriptions, no tracking. Everything runs on your machine via Ollama.
