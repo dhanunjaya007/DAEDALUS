@@ -36,13 +36,51 @@ Daedalus is a completely offline, local AI chat application powered by **[Ollama
 * **Embeddings:** `nomic-embed-text`
 * **Parsing:** `pdf-parse`, `cheerio`, `youtube-transcript`
 
-## 💻 System Requirements (Compute)
+## 💻 Hardware Specs & Recommended Models
 
-Because Daedalus runs models entirely locally on your own machine via Ollama, your hardware determines the performance.
+Because Daedalus runs 100% locally on your machine via Ollama, your hardware determines generation speed and capability. Different models unlock different features:
 
-* **Minimum:** 8GB RAM, modern multi-core CPU (Will run 7B or 8B models like `llama3` or `qwen2.5:7b` at reasonable speeds).
-* **Recommended:** 16GB+ RAM, Apple Silicon (M1/M2/M3) OR a dedicated NVIDIA GPU with at least 8GB VRAM (e.g., RTX 3060 or better). This allows fast token generation and snappy document embeddings.
-* **Disk Space:** ~100MB for the app, plus 4GB - 8GB per LLM you download through Ollama.
+### 🔑 Which Model Unlocks Which Feature?
+| Daedalus Feature | Required Model Type | Top Recommended Models | Why? |
+| :--- | :--- | :--- | :--- |
+| **📄 Document RAG** (PDF, C++, Py, JS) | **Embedding Model** | `nomic-embed-text`, `mxbai-embed-large` | Required to convert documents into vector embeddings for local semantic search. |
+| **💻 Code Sandbox & Tools** (Python/JS, Math, Web Search) | **Instruct / Tool-Calling Model** | `qwen2.5:7b-instruct`, `llama3.1:8b`, `qwen2.5-coder:7b` | Models trained with native function-calling reliably output JSON commands to execute local tools. |
+| **🧠 Deep Reasoning** (Math proofs, CS algorithms) | **Reasoning Model** | `deepseek-r1:7b`, `deepseek-r1:14b` | Generates `<think>` reasoning chains that Daedalus formats into an interactive dropdown. |
+
+---
+
+### 🖥️ Hardware Tiers & Model Recommendations
+
+#### 🥔 Tier 1: Entry-Level Laptops (8GB RAM | CPU Only | No Dedicated GPU)
+* **Best Chat Model:** `qwen2.5:3b-instruct` or `llama3.2:3b`
+* **Best Embedding Model:** `nomic-embed-text`
+* **Install Command:**
+  ```bash
+  ollama run qwen2.5:3b-instruct
+  ollama pull nomic-embed-text
+  ```
+* **Performance:** Lightweight 3B models run smoothly on standard laptops without overheating. Great for basic Q&A, summarizing study notes, and simple RAG queries.
+
+#### ⚡ Tier 2: Mid-Range / Student Laptops (16GB RAM | Apple M1/M2/M3 OR 6GB-8GB VRAM GPU e.g., RTX 3050/3060/4050) — *🌟 Sweet Spot!*
+* **Best Chat Model:** `qwen2.5:7b-instruct`, `llama3.1:8b`, or `qwen2.5-coder:7b`
+* **Best Embedding Model:** `nomic-embed-text`
+* **Install Command:**
+  ```bash
+  ollama run qwen2.5:7b-instruct
+  ollama pull nomic-embed-text
+  ```
+* **Performance:** Fast token generation (~30–50+ tokens/sec). Unlocks **flawless Tool Calling**, reliable Python/JS Code Sandbox execution, accurate YouTube summarization, and strong multi-language coding assistance.
+
+#### 🚀 Tier 3: High-End Workstations (32GB+ RAM | Apple M-Pro/Max OR 12GB+ VRAM GPU e.g., RTX 4070/4080/4090)
+* **Best Chat Model:** `qwen2.5:14b-instruct`, `deepseek-r1:14b`, or `qwen2.5-coder:14b` (Even `llama3.1:70b` on 64GB Unified RAM Macs!)
+* **Best Embedding Model:** `mxbai-embed-large` or `nomic-embed-text`
+* **Install Command:**
+  ```bash
+  ollama run qwen2.5:14b-instruct
+  ollama run deepseek-r1:14b
+  ollama pull mxbai-embed-large
+  ```
+* **Performance:** Master-level software engineering, competitive programming solutions, deep architectural reasoning, and instant RAG embeddings across massive document libraries.
 
 ## 📦 Getting Started
 
