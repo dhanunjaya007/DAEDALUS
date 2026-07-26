@@ -46,16 +46,37 @@ Because Daedalus runs models entirely locally on your own machine via Ollama, yo
 
 ## 📦 Getting Started
 
-### Prerequisites
-1. Install [Node.js](https://nodejs.org/)
-2. Install [Ollama](https://ollama.ai/) and start it.
-3. Pull the required models in your terminal:
+There are two ways to run Daedalus: downloading the ready-to-use portable executable (recommended for most users) or running/building from source (for developers).
+
+### Option 1: For Normal Users (Portable Executable)
+You **do not** need Node.js installed for this option—only Ollama!
+
+1. **Install Ollama:** Download and install [Ollama for Windows, Mac, or Linux](https://ollama.ai/download). Make sure the Ollama application is running in your system tray or background.
+2. **Download AI Models:** Open your command prompt or terminal and pull the recommended chat model and embedding model (used for document RAG):
    ```bash
-   ollama run qwen2.5:7b
+   ollama run qwen2.5:7b-instruct
    ollama pull nomic-embed-text
    ```
+3. **Download & Run Daedalus:** Go to our [GitHub Releases](https://github.com/dhanunjaya007/DAEDALUS/releases), download **`Daedalus 1.0.0.exe`**, and double-click to start working immediately! No installer required.
 
-### Installation
+---
+
+### Option 2: For Developers (Run from Source)
+If you want to contribute, modify the UI, or build from source, you will need both **Node.js** and **Ollama**.
+
+#### 1. Install Prerequisites
+* **Node.js:** Download and install [Node.js (v18+ or v20 LTS recommended)](https://nodejs.org/en/download/). Verify your installation by opening a terminal and running:
+  ```bash
+  node -v
+  npm -v
+  ```
+* **Ollama:** Install [Ollama](https://ollama.ai/download), start it, and pull the required models:
+  ```bash
+  ollama run qwen2.5:7b-instruct
+  ollama pull nomic-embed-text
+  ```
+
+#### 2. Clone & Start App
 ```bash
 # Clone the repository
 git clone https://github.com/dhanunjaya007/DAEDALUS.git
@@ -66,16 +87,16 @@ cd DAEDALUS
 # Install dependencies
 npm install
 
-# Start the app
+# Start the app in development mode
 npm start
 ```
 
-### Build for Production
-To build a portable Windows executable (`.exe`):
+#### 3. Build Portable Windows Executable (`.exe`)
+To bundle the app into a standalone portable Windows executable:
 ```bash
 npm run dist
 ```
-The compiled executable will be located in the `dist/` directory.
+The compiled binary will be generated inside the `dist/` directory as `Daedalus <version>.exe`.
 
 ## 💬 Community & Feedback
 
